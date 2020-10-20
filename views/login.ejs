@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TodoList</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="assets/style.css">     
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <meta name="description" content="Todo List application"/>
+    </head>
+    
+    <body>
+        <nav>
+            <h1>TodoList</h1>
+        </nav>
+        
+        <!-- SignIn Section -->
+        
+        <div class="SignIn" style="display: block;">
+            <div class="form">
+                <h1>SignIn</h1>
+                <form class="SignInForm" onsubmit="loginHandler(event)">
+                    <input class="email" type="email" placeholder="email">
+                    <input class="password" type="password" placeholder="passowrd">
+                    <button class="SignInbtn" type="submit" name="submit">SignIn</button>
+                </form>
+                <a class="createAcc" href="register"><p>Create an account</p></a>
+                <p>-</p>
+                <a  class="forgetMy" href="forgetPassword"><p>forget my password</p></a>
+            </div>
+        </div>
+        
+        <!-- SignIn Section -->
+    
+    </body>
+
+    <script>
+        function loginHandler(e){
+           
+            e.preventDefault();
+
+            //get email and password from user.
+            const email = document.querySelector('.email').value;
+            const password = document.querySelector('.password').value;
+
+            //make a post request to backend.
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({email,password}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data);
+                if(data === 'login') location.replace('/');
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+            
+
+        }        
+
+    </script>
+</html>
+

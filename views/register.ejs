@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TodoList</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="assets/style.css">     
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <meta name="description" content="Todo List application"/>
+    </head>
+    
+    <body>
+        <nav>
+            <h1>TodoList</h1>
+        </nav>
+        
+    
+        <!-- SignUp Section -->
+
+        <div class="SignUp" style="display: block;">
+            <div class="form">
+                <h1>SignUp</h1>
+                <form class="SignUpForm" onsubmit="registerHandler(event)">
+                    <input class="name" type="text" placeholder="username">
+                    <input class="email" type="email" placeholder="email">
+                    <input class="password" type="password" placeholder="passowrd">
+                    <input class="confirmPassword" type="password" placeholder="confirm passowrd">
+                    <button class="SignUpbtn" type="submit" name="submit">SignUp</button>
+                </form>
+                <a class="haveaccount" href="login"><p>Already have an account</p></a>
+                <p>-</p>
+                <a class="forgetMy1" href="forgetPassword"><p>forget my password</p></a>
+            </div>
+        </div>
+
+        <!-- SignUp Section -->
+        
+    </body>
+
+    <script>
+        function registerHandler(e){
+           
+            e.preventDefault();
+
+            //get name, email and password from user.
+            const name = document.querySelector('.name').value;
+            const email = document.querySelector('.email').value;
+            const password = document.querySelector('.password').value;
+            const confirmPassword = document.querySelector('.confirmPassword').value;
+
+            //check if password equal confirm password
+            if(password !== confirmPassword){
+                alert(`password doesn't match`);
+            } else {
+                //if it's true make a post request to backend.
+                fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({name,email,password}),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data);
+                    if(data === 'register successed') location.replace('/')
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+
+        }        
+
+    </script>
+</html>

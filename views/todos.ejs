@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+    <!-- 
+        Created by: Muhammed ebrahim
+        email: muhammedebrahim00@gmail.com
+        phone: 01016350644
+    -->
+    <head>
+        <title>TodoList</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="assets/style.css">     
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <meta name="description" content="Todo List application"/>
+    </head>
+    
+    <body>
+        <nav>
+            <h1>TodoList</h1>
+            <%if(user){%>
+            <ul>
+                <p>welcome, <%= user %></p>
+                <button class="signout" name='submit' type="submit" onclick="logout(event)" >SignOut</button>
+            </ul>
+            <%}%>
+        </nav>
+        
+        <div class="container1">
+            <div class="todoInput">
+                <form onsubmit="addTodoHandler(event)">
+                    <input type="text" name="todo" id='input-text' placeholder="Text"></input>
+                    <input class="submit-btn"  type="submit" value="submit" name="submit"></button>
+                </form>
+            </div>
+            <div class="todos">
+                
+                <% todos.forEach(todo =>{ %>
+                    <div class="todo" key="<%= todo._id %>">
+                        <input value= "<%= todo.inputText %>" style="<%= todo.checked === true ? 'text-decoration: line-through': 'text-decoration:none' %>" id="<%= todo._id %>text" type='text'> 
+                        <button class="fas fa-check-circle" id="<%= todo._id %>" onclick="checkTodo(event,<%=todo.checked%>)"></button>
+                        <button class="fas fa-times-circle" id="<%= todo._id %>" onclick="deleteTodo(event)"></button>
+                        <button class="fas fa-save" id="<%= todo._id %>" onclick="updateTodo(event)"></button>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+
+
+
+    </body>
+    <script>
+
+        // add new todo to database
+        function addTodoHandler(event){
+            event.preventDefault();
+
+            let newTodo = document.getElementById('input-text').value
+            let data = {inputText: newTodo, docID:'3', checked:false}
+            
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    location.reload();
+                })
+                .catch((error) => {
+                console.error('Error:', error);
+                });
+        }      
+
+        function deleteTodo(event){
+            event.preventDefault();
+            fetch(`/${event.target.id}`,{
+                method: 'DELETE',
+            }).then(()=>{
+                location.reload();
+            })
+        }
+
+        function updateTodo(event){
+            event.preventDefault();
+            
+            const inputTodo = document.getElementById(`${event.target.id}text`).value
+            const data = {inputText:inputTodo}
+            fetch(`/updateTodo/${event.target.id}`,{
+                method: 'PATCH',
+                headers:{
+                    'Content-Type': 'application/json',
+                },
+                body:JSON.stringify(data)
+            }).then(() => {
+                location.reload()
+            })
+        }
+
+        function checkTodo(event,decoration){
+            event.preventDefault();
+            const checked = !decoration;
+            const data = {checked}
+            fetch(`/checkedTodo/${event.target.id}`,{
+                method: 'PATCH',
+                headers:{
+                    'Content-Type': 'application/json',
+                },
+                body:JSON.stringify(data)
+            }).then(() => {
+                location.reload()
+            })
+        }
+
+        function logout(event){
+            event.preventDefault();
+
+            fetch('/logout', {
+                method: 'GET',
+                })
+                .then(() => {
+                    location.replace('/login')
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+   
+   </script>
+</html>
